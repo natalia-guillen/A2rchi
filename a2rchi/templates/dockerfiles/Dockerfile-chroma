@@ -1,0 +1,4 @@
+FROM ghcr.io/chroma-core/chroma:0.5.4
+RUN apt-get update -y && apt-get install -y curl
+
+
