@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: a2rchi
+Version: 0.1.0
+Summary: An AI Augmented Research Chat Intelligence (A2rchi)
+Author-email: Julius Heitkoetter <juliush@mit.edu>, Time Kraska <kraska@mit.edu>, Ludovico Mori <mori25@mit.edu>, Christoph Paus <paus@mit.edu>, Matthew Russo <mdrusso@mit.edu>
+Project-URL: Homepage, https://github.com/mit-submit/A2rchi
+Requires-Python: >=3.7
+License-File: LICENSE
+Requires-Dist: pyyaml==6.0.1
+Requires-Dist: click==8.1.7
+Requires-Dist: jinja2==3.1.3
+Requires-Dist: requests==2.31.0
+Dynamic: license-file

@@ -1,0 +1,2 @@
+[console_scripts]
+a2rchi = a2rchi.cli.cli_main:main
