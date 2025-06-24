@@ -1,0 +1,24 @@
+# stored in file ex_conf.yaml
+name: bare_minimum_configuration #REQUIRED
+
+global:
+  TRAINED_ON: "subMIT and the people who started A2rchi" #REQUIRED
+
+
+chains:
+  input_lists:
+    - config/mis_docs.list
+    - config/submit.list
+    - config/miscellanea.list
+  chain:
+    MODEL_NAME: OpenAIGPT4
+    CONDENSE_MODEL_NAME: OpenAIGPT4
+    SUMMARY_MODEL_NAME: OpenAIGPT4
+  prompts:
+    CONDENSING_PROMPT: config/prompts/condense.prompt
+    MAIN_PROMPT: config/prompts/submit.prompt
+    SUMMARY_PROMPT: config/prompts/summary.prompt
+
+
+locations_of_secrets: #REQUIRED
+  - C:\Users\UAH\Desktop\A2rchi\secrets\

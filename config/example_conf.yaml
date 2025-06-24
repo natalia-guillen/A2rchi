@@ -1,0 +1,22 @@
+# stored in file example_conf.yaml
+name: bare_minimum_configuration #REQUIRED
+
+global:
+  TRAINED_ON: "subMIT and the people who started A2rchi" #REQUIRED
+
+chains:
+  input_lists: #REQUIRED
+    - config_old/mis_docs.list
+    - config_old/submit.list
+    - config_old/miscellanea.list
+    
+  MODEL_NAME: OpenAIGPT4 #REQUIRED
+  CONDENSE_MODEL: OpenAIGPT4 #REQUIRED
+  SUMMARY_MODEL_NAME: OpenAIGPT4 #REQUIRED
+  prompts:
+    CONDENSING_PROMPT: config_old/prompts/condense.prompt #REQUIRED
+    MAIN_PROMPT: config_old/prompts/submit.prompt #REQUIRED
+    SUMMARY_PROMPT: config_old/prompts/summary.prompt #REQUIRED
+
+location_of_secrets: #REQUIRED
+  - ~/.secrets/a2rchi_base_secrets
