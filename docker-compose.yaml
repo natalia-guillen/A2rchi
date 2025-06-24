@@ -1,0 +1,147 @@
+services:
+  chat:
+    image: chat_image:latest
+    build:
+      context: .
+      dockerfile: a2rchi/templates/dockerfiles/Dockerfile-chat
+      args:
+        TAG: latest
+    container_name: chat-prueba
+    depends_on:
+      chromadb:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      OPENAI_API_KEY_FILE: /run/secrets/openai_api_key
+      ANTHROPIC_API_KEY_FILE: /run/secrets/anthropic_api_key
+      HUGGING_FACE_HUB_TOKEN_FILE: /run/secrets/hf_token
+      POSTGRES_PASSWORD_FILE: /run/secrets/pg_password
+      
+    secrets:
+      - openai_api_key
+      - anthropic_api_key
+      - hf_token
+      - pg_password
+    volumes:
+      - chat_data:/root/data/
+      - ./config.yaml:/root/A2rchi/config.yaml
+      - ./config/prompts/main.prompt:/root/A2rchi/config/prompts/main.prompt
+      - ./config/prompts/condense.prompt:/root/A2rchi/config/prompts/condense.prompt
+      - ./config/prompts/summary.prompt:/root/A2rchi/config/prompts/summary.prompt
+
+    logging:
+      options:
+        max-size: 10m
+    ports:
+      - 5000:5000  # host:container
+    restart: always
+    
+  
+  chromadb:
+    image: chromadb-prueba:latest
+    build:
+      context: .
+      dockerfile:  a2rchi/templates/dockerfiles/Dockerfile-chroma
+    container_name: chromadb-prueba
+    ports:
+      - 8000:8000  # host:container
+    #volumes:
+    #  - chat_data:/chroma/chroma/
+    logging:
+      options:
+        max-size: 10m
+    restart: always
+    # healthcheck originates from inside container; so use container port
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://0.0.0.0:8000/api/v1/heartbeat"] #health check uses container port
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
+
+  postgres:
+    image: docker.io/postgres:16
+    container_name: postgres-prueba
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/pg_password
+      POSTGRES_USER: a2rchi
+      POSTGRES_DB: a2rchi-db
+    secrets:
+      - pg_password
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+    logging:
+      options:
+        max-size: 10m
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U a2rchi -d a2rchi-db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  
+
+  
+
+  
+
+  
+
+volumes:
+  chat_data:
+    external: true
+  postgres_data:
+    external: true
+  
+
+secrets:
+  # Core secrets
+  openai_api_key:
+    file: secrets/openai_api_key.txt
+  anthropic_api_key:
+    file: secrets/anthropic_api_key.txt
+  hf_token:
+    file: secrets/hf_token.txt
+  pg_password:
+    file: secrets/pg_password.txt
+
+  # Uploader secrets
+  flask_uploader_app_secret_key:
+    file: secrets/flask_uploader_app_secret_key.txt
+  uploader_salt:
+    file: secrets/uploader_salt.txt
+
+  # Cleo and mailbox secrets
+  imap_user:
+    file: secrets/imap_user.txt
+  imap_pw:
+    file: secrets/imap_pw.txt
+  cleo_url:
+    file: secrets/cleo_url.txt
+  cleo_user:
+    file: secrets/cleo_user.txt
+  cleo_pw:
+    file: secrets/cleo_pw.txt
+  cleo_project:
+    file: secrets/cleo_project.txt
+  sender_server:
+    file: secrets/sender_server.txt
+  sender_port:
+    file: secrets/sender_port.txt
+  sender_replyto:
+    file: secrets/sender_replyto.txt
+  sender_user:
+    file: secrets/sender_user.txt
+  sender_pw:
+    file: secrets/sender_pw.txt
+  # Piazza secrets
+  piazza_email:
+    file: secrets/piazza_email.txt
+  piazza_password:
+    file: secrets/piazza_password.txt
+  slack_webhook:
+    file: secrets/slack_webhook.txt
